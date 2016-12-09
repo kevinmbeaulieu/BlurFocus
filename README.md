@@ -4,7 +4,7 @@
 
 # Information:
 
-- Designed for 10.9+
+- Designed for 10.12+
 - SIMBL plugin to blur background windows on OS X
 - Authors: [w0lfschild](https://github.com/w0lfschild), [kevinmbeaulieu](https://github.com/kevinmbeaulieu)
 
