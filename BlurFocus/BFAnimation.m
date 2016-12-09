@@ -50,7 +50,8 @@ static const double              blurRadius = 3.0;
         _overlayWindow.contentView.layer.masksToBounds = YES;
         _overlayWindow.contentView.layer.cornerRadius = MACOS_WINDOW_CORNER_RADIUS;
         NSImageView *overlayView = [NSImageView imageViewWithImage:blurredNSImage];
-        overlayView.frame = NSMakeRect(0, 0, _window.frame.size.width, _window.frame.size.height);
+        overlayView.frame = NSMakeRect(0, 0, _overlayWindow.frame.size.width,
+                _overlayWindow.frame.size.height);
         [_overlayWindow.contentView addSubview:overlayView];
         [_window addChildWindow:_overlayWindow ordered:NSWindowAbove];
     }

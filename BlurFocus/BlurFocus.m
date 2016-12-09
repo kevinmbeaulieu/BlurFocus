@@ -35,6 +35,7 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
         [center addObserver:self selector:@selector(BF_clearWindow:) name:NSWindowDidBecomeMainNotification object:nil];
         [center addObserver:self selector:@selector(BF_clearWindow:) name:NSWindowDidBecomeKeyNotification object:nil];
         [center addObserver:self selector:@selector(BF_clearWindow:) name:NSWindowDidEnterFullScreenNotification object:nil];
+        [center addObserver:self selector:@selector(BF_spaceChanged:) name:NSWorkspaceActiveSpaceDidChangeNotification object:nil];
     }
 }
 
@@ -43,7 +44,7 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
     NSWindow *win = note.object;
     if (![objc_getAssociatedObject(win, isActive) boolValue] // Already blurred
             && !([win styleMask] & NSWindowStyleMaskFullScreen) // Don't blur full-/split-screen windows
-            && win.level != kCGDesktopIconWindowLevel // Don't blur desktop icons
+            && win.level <= NSNormalWindowLevel // Only blur normal windows & desktop icons
             && win.attachedSheet == nil // Don't blur if it would cover up a modal dialog
             && ![win isKindOfClass:[NSPanel class]] // Dont' blur if panel (e.g., emojis, fonts)
             ) {
@@ -64,6 +65,22 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
         [anim startAnimation];
         
         objc_setAssociatedObject(win, isActive, [NSNumber numberWithBool:false], OBJC_ASSOCIATION_RETAIN);
+    }
+}
+
++ (void)BF_spaceChanged:(NSNotification *)note
+{
+    [NSApplication sharedApplication];
+    
+    // If active application's key window is in a different space, give focus to Finder
+    if (NSApp.isActive && !NSApp.keyWindow.isOnActiveSpace) {
+        NSArray *apps = [[NSWorkspace sharedWorkspace] runningApplications];
+        for (NSRunningApplication *app in apps) {
+            if([app.bundleIdentifier.lowercaseString isEqualToString:@"com.apple.finder"]) {
+                [app activateWithOptions:NSApplicationActivateAllWindows|NSApplicationActivateIgnoringOtherApps];
+                break;
+            }
+        }
     }
 }
 
