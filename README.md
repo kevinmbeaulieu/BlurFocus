@@ -6,12 +6,12 @@
 
 - Designed for 10.9+
 - SIMBL plugin to blur background windows on OS X
-- Author: [w0lfschild](https://github.com/w0lfschild)
+- Authors: [w0lfschild](https://github.com/w0lfschild), [kevinmbeaulieu](https://github.com/kevinmbeaulieu)
 
 # Installation:
 
 1. Download [mySIMBL](https://github.com/w0lfschild/app_updates/raw/master/mySIMBL/mySIMBL_0.2.5.zip)
-2. Download [BlurFocus](https://github.com/w0lfschild/BlurFocus/raw/master/build/BlurFocus.zip)
+2. Download [BlurFocus](https://github.com/kevinmbeaulieu/BlurFocus/raw/master/build/BlurFocus.zip)
 3. Unzip downloads
 4. Open `BlurFocus.bundle` with `mySIMBL.app`
 5. Restart Chrome
