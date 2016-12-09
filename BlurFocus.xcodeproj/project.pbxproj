@@ -240,7 +240,7 @@
 				INFOPLIST_FILE = BlurFocus/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = org.w0lf.BlurFocus;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevinmbeaulieu.BlurFocus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
@@ -254,7 +254,7 @@
 				INFOPLIST_FILE = BlurFocus/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = org.w0lf.BlurFocus;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevinmbeaulieu.BlurFocus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = bundle;
