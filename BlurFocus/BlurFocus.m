@@ -34,14 +34,19 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
         [center addObserver:self selector:@selector(BF_blurWindow:) name:NSWindowDidResignMainNotification object:nil];
         [center addObserver:self selector:@selector(BF_clearWindow:) name:NSWindowDidBecomeMainNotification object:nil];
         [center addObserver:self selector:@selector(BF_clearWindow:) name:NSWindowDidBecomeKeyNotification object:nil];
+        [center addObserver:self selector:@selector(BF_clearWindow:) name:NSWindowDidEnterFullScreenNotification object:nil];
     }
 }
 
 + (void)BF_blurWindow:(NSNotification *)note
 {
     NSWindow *win = note.object;
-    if (![objc_getAssociatedObject(win, isActive) boolValue]
-            && !([win styleMask] & NSWindowStyleMaskFullScreen)) {
+    if (![objc_getAssociatedObject(win, isActive) boolValue] // Already blurred
+            && !([win styleMask] & NSWindowStyleMaskFullScreen) // Don't blur full-/split-screen windows
+            && win.level != kCGDesktopIconWindowLevel // Don't blur desktop icons
+            && win.attachedSheet == nil // Don't blur if it would cover up a modal dialog
+            && ![win isKindOfClass:[NSPanel class]] // Dont' blur if panel (e.g., emojis, fonts)
+            ) {
         BFAnimation *anim = [[BFAnimation alloc] initBlurWithWindow:win duration:duration animationCurve:animationCurve];
         objc_setAssociatedObject(win, overlayWindow, anim.overlayWindow, OBJC_ASSOCIATION_RETAIN);
         [anim startAnimation];
