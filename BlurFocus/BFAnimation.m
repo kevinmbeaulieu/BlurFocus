@@ -12,7 +12,7 @@
 #define MACOS_WINDOW_CORNER_RADIUS 7.0f
 
 static NSString                 *blurType = @"CIGaussianBlur";
-static const double              blurRadius = 3.0;
+static const double              blurRadius = 4.0;
 
 @implementation BFAnimation
 
