@@ -26,7 +26,7 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
 + (void)load
 {
     NSArray *blacklist = @[@"com.apple.notificationcenterui", @"com.google.chrome", @"com.google.chrome.canary"];
-    NSString *appID = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *appID = [[[NSBundle mainBundle] bundleIdentifier] lowercaseString];
     if (![blacklist containsObject:appID])
     {
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
