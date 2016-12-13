@@ -23,9 +23,8 @@ static void                     *overlayWindow = &overlayWindow;
 static const float              duration = 0.1;
 static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
 
-+ (void)load
-{
-    NSArray *blacklist = @[@"com.apple.notificationcenterui", @"com.google.chrome", @"com.google.chrome.canary"];
++ (void)load {
+    NSArray *blacklist = @[@"com.apple.notificationcenterui"];
     NSString *appID = [[[NSBundle mainBundle] bundleIdentifier] lowercaseString];
     if (![blacklist containsObject:appID])
     {
@@ -39,14 +38,16 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
     }
 }
 
-+ (void)BF_blurWindow:(NSNotification *)note
-{
++ (void)BF_blurWindow:(NSNotification *)note {
+    [NSApplication sharedApplication];
+    
     NSWindow *win = note.object;
     if (![objc_getAssociatedObject(win, isActive) boolValue] // Already blurred
             && !([win styleMask] & NSWindowStyleMaskFullScreen) // Don't blur full-/split-screen windows
             && win.level <= NSNormalWindowLevel // Only blur normal windows & desktop icons
             && win.attachedSheet == nil // Don't blur if it would cover up a modal dialog
-            && ![win isKindOfClass:[NSPanel class]] // Dont' blur if panel (e.g., emojis, fonts)
+            && ![win isKindOfClass:[NSPanel class]] // Don't blur if panel (e.g., emojis, fonts)
+            && ![win.childWindows containsObject:NSApp.keyWindow] // Don't blur if it would cover up a child window (e.g., popovers)
             ) {
         BFAnimation *anim = [[BFAnimation alloc] initBlurWithWindow:win duration:duration animationCurve:animationCurve];
         objc_setAssociatedObject(win, overlayWindow, anim.overlayWindow, OBJC_ASSOCIATION_RETAIN);
@@ -56,9 +57,16 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
     }
 }
 
-+ (void)BF_clearWindow:(NSNotification *)note
-{
-    NSWindow *win = note.object;
++ (void)BF_clearWindow:(id)object {
+    NSWindow *win;
+    if ([object isKindOfClass:[NSNotification class]]) {
+        win = ((NSNotification *)object).object;
+    } else if ([object isKindOfClass:[NSWindow class]]) {
+        win = object;
+    } else {
+        return;
+    }
+    
     if ([objc_getAssociatedObject(win, isActive) boolValue]) {
         NSWindow *savedOverlayWindow = objc_getAssociatedObject(win, overlayWindow);
         BFAnimation *anim = [[BFAnimation alloc] initClearWithWindow:win overlayWindow:savedOverlayWindow duration:duration animationCurve:animationCurve];
@@ -68,8 +76,7 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
     }
 }
 
-+ (void)BF_spaceChanged:(NSNotification *)note
-{
++ (void)BF_spaceChanged:(NSNotification *)note {
     [NSApplication sharedApplication];
     
     // If active application's key window is in a different space, give focus to Finder
