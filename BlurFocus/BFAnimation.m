@@ -39,16 +39,23 @@ static const double              blurRadius = 4.0;
         NSImage *blurredNSImage = [[NSImage alloc] initWithData:blurredImageData];
         
         // Create window with blurred image on top of target window
-        _overlayWindow = [[NSWindow alloc] initWithContentRect:_window.frame
-                styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:NO];
-        _overlayWindow.backgroundColor = [NSColor clearColor];
-        _overlayWindow.opaque = NO;
-        _overlayWindow.alphaValue = 0.0f;
-        _overlayWindow.ignoresMouseEvents = YES;
-        _overlayWindow.contentView.wantsLayer = YES;
-        _overlayWindow.contentView.layer.opaque = NO;
-        _overlayWindow.contentView.layer.masksToBounds = YES;
-        _overlayWindow.contentView.layer.cornerRadius = MACOS_WINDOW_CORNER_RADIUS;
+        if (!_overlayWindow) {
+            _overlayWindow = [[NSWindow alloc] initWithContentRect:_window.frame
+                    styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:NO];
+            _overlayWindow.backgroundColor = [NSColor clearColor];
+            _overlayWindow.opaque = NO;
+            _overlayWindow.alphaValue = 0.0f;
+            _overlayWindow.ignoresMouseEvents = YES;
+            _overlayWindow.contentView.wantsLayer = YES;
+            _overlayWindow.contentView.layer.opaque = NO;
+            _overlayWindow.contentView.layer.masksToBounds = YES;
+            _overlayWindow.contentView.layer.cornerRadius = MACOS_WINDOW_CORNER_RADIUS;
+        } else {
+            while (_overlayWindow.contentView.subviews.count > 0) {
+                [[_overlayWindow.contentView.subviews firstObject] removeFromSuperview];
+            }
+        }
+        
         NSImageView *overlayView = [NSImageView imageViewWithImage:blurredNSImage];
         overlayView.frame = NSMakeRect(0, 0, _overlayWindow.frame.size.width,
                 _overlayWindow.frame.size.height);
@@ -75,7 +82,7 @@ static const double              blurRadius = 4.0;
         _overlayWindow.alphaValue = 1.0 - currentProgress;
         
         if (currentProgress >= 1.0) {
-            [_window removeChildWindow:_overlayWindow];
+            [_overlayWindow orderOut:nil];
         }
     } else {
         _overlayWindow.alphaValue = currentProgress;
