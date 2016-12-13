@@ -48,6 +48,7 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
             && win.attachedSheet == nil // Don't blur if it would cover up a modal dialog
             && ![win isKindOfClass:[NSPanel class]] // Don't blur if panel (e.g., emojis, fonts)
             && ![win.childWindows containsObject:NSApp.keyWindow] // Don't blur if it would cover up a child window (e.g., popovers)
+            && [self BF_childWindowsAllNormal:win] // Only blur if child windows are all <= NSNormalWindowLevel
             ) {
         BFAnimation *anim = [[BFAnimation alloc] initBlurWithWindow:win duration:duration animationCurve:animationCurve];
         objc_setAssociatedObject(win, overlayWindow, anim.overlayWindow, OBJC_ASSOCIATION_RETAIN);
@@ -89,6 +90,16 @@ static const NSAnimationCurve   animationCurve = NSAnimationEaseInOut;
             }
         }
     }
+}
+
++ (BOOL)BF_childWindowsAllNormal:(NSWindow *)win {
+    for (NSWindow *child in win.childWindows) {
+        if (child.level > NSNormalWindowLevel) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 @end
