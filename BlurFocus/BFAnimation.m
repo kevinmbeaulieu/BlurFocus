@@ -13,7 +13,7 @@
 
 static NSString                 *blurType = @"CIGaussianBlur";
 static const double              blurRadius = 4.0;
-static const float               refreshRate = 0.06;
+static const float               refreshRate = 1.0;
 
 @interface BFAnimation ()
 
